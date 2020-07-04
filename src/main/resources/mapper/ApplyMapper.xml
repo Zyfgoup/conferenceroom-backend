@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyfgoup.mapper.ApplyMapper">
+
+
+    <!-- 分三种情况 第一种 已申请会议的开始时间在新申请的开始时间和结束时间之间（三种情况的新申请开始结束都加减了30分钟（为了整点其实是29）
+        第二种 已申请会议的结束时间在新申请的开始时间和结束时间之间
+        第三种 已申请会议的开始大于等于新申请的开始 并且 结束时间大于等于新申请的结束时间
+        且前提是审核通过的
+     -->
+    <select id="searchTimeConflict" resultType="integer">
+      select a.apply_id
+      from apply a ,conference_record cre ,conference_room cro
+      where a.apply_id = cre.apply_id and cro.room_id=#{roomId}
+      and a.room_id = cro.room_id
+      and a.audit_state =1
+      and (cre.start_time between DATE_SUB(#{startTime}, INTERVAL 29 MINUTE)and DATE_ADD(#{endTime}, INTERVAL 29 MINUTE)
+      or cre.end_time between DATE_SUB(#{startTime}, INTERVAL 29 MINUTE)and DATE_ADD(#{endTime}, INTERVAL 29 MINUTE)
+      or (cre.start_time &lt;= DATE_SUB(#{startTime}, INTERVAL 29 MINUTE) and cre.end_time &gt;= DATE_ADD(#{endTime}, INTERVAL 29 MINUTE)))
+
+
+    </select>
+</mapper>

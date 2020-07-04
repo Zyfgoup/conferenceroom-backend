@@ -1,0 +1,59 @@
+spring:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/meeting?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 0
+  mail:
+    #邮件协议smtp
+    host: smtp.qq.com
+    #发送者的邮件的用户名   用QQ登录
+    username: 619122012@qq.com
+          #使用的编码
+    default-encoding: utf-8
+          #移动端客户授权码(在邮箱中设置)
+    password: pfetkewqnkhkbcfb
+    port: 465
+    properties:
+         mail:
+           smtp:
+             socketFactory:
+               class: javax.net.ssl.SSLSocketFactory
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 8888
+
+
+
+
+shiro-redis:
+  enabled: true
+  redis-manager:
+    host: 127.0.0.1:6379
+    password: 123456
+
+zyfgoup:
+  jwt:
+    secret: f4e2e52034348f86b67cde581c0f9eb5
+    expire: 604800
+    header: Authorization
+
+logging:
+  file:
+    name: ./logs/logger.log
+  level:
+    root: info
+
+

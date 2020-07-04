@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>会议开始通知</title>
+</head>
+<body>
+    <h2>申请的会议即将开始</h2>
+    <span>会议主题：</span><span style="font-weight: bold" th:text="${theme}"></span>
+    <br>
+    <span>会议室：</span><span style="font-weight: bold" th:text="${roomFloor}"></span><span>层 </span><span style="font-weight: bold" th:text="${roomNo}"></span>
+    <br>
+    <span>会议时间：</span><span style="font-weight: bold" th:text="${startTime}"></span><span>--</span><span  style="font-weight: bold" th:text="${endTime}"></span>
+
+</body>
+</html>

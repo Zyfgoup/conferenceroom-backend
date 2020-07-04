@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyfgoup.mapper.ConferenceRecordMapper">
+
+
+
+    <select id="listByConditions" resultType="com.zyfgoup.entity.group.ConRApplyRecord">
+        select a.apply_id,audit_state,audit_time,apply_time,reject_reason,
+        start_time,end_time,theme,digest,cre.person_count,
+        d.dep_no,dep_name,dep_email,
+
+        a.room_id,room_no,room_floor,room_size,room_type,room_size
+
+        from apply a,conference_room cro,conference_record cre,department d
+        <where>
+            <if test="auditState!=null">
+                a.audit_state = #{auditState}
+            </if>
+            <if test="depName!=null and depName!=''">
+                and d.dep_name = #{depName}
+            </if>
+            <if test="deleted!=null">
+                and a.deleted = #{deleted}
+            </if>
+            and a.dep_id = d.dep_id
+            and a.room_id = cro.room_id
+            and a.apply_id = cre.apply_id
+        </where>
+          order by a.apply_time desc
+        limit #{startIndex},7
+    </select>
+
+    <select id="getTotalByConditions" resultType="integer">
+
+--         函数count ()不要有个空格
+        select COUNT(*)
+
+        from apply a,conference_room cro,conference_record cre,department d
+        <where>
+            <if test="auditState!=null">
+                a.audit_state = #{auditState}
+            </if>
+            <if test="depName!=null and depName!=''">
+                and d.dep_name = #{depName}
+            </if>
+            <if test="deleted!=null">
+                and a.deleted = #{deleted}
+            </if>
+            and a.dep_id = d.dep_id
+            and a.room_id = cro.room_id
+            and a.apply_id = cre.apply_id
+        </where>
+    </select>
+</mapper>
