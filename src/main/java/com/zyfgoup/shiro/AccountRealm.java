@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 
 import com.zyfgoup.entity.Admin;
 import com.zyfgoup.entity.Department;
+import com.zyfgoup.entity.Employee;
 import com.zyfgoup.service.AdminService;
 import com.zyfgoup.service.DepartmentService;
+import com.zyfgoup.service.EmployeeService;
 import com.zyfgoup.util.JwtUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -23,6 +25,9 @@ public class AccountRealm extends AuthorizingRealm {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    EmployeeService employeeService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -54,20 +59,34 @@ public class AccountRealm extends AuthorizingRealm {
 
         JwtToken jwtToken = (JwtToken) token;
 
-        //有可能是部门id  也可能是admin id
+        //有可能是部门id  也可能是admin id 也有可能是员工
         String userId = jwtUtils.getClaimByToken((String) jwtToken.getPrincipal()).getSubject();
 
         //判断账号是否存在
-        Department department = departmentService.getById(Long.valueOf(userId));
+        Department department = departmentService.getById(userId);
         if(department==null){
-            Admin admin = adminService.getById(Long.valueOf(userId));
-            if(admin ==null){
-                throw new UnknownAccountException("用户不存在");
+            Employee employee = employeeService.getById(userId);
+            if(employee ==null){
+
+               Admin admin = adminService.getById(Long.valueOf(userId));
+                if(admin == null) {
+
+                    throw new UnknownAccountException("用户不存在");
+                }else{
+                    //管理员
+
+                    AccountProfile profile = new AccountProfile();
+                    profile.setId(String.valueOf(admin.getId()));
+                    profile.setRole(admin.getRole());
+
+                    return new SimpleAuthenticationInfo(profile, jwtToken.getCredentials(), getName());
+                }
             }else{
-                //管理员
+                //员工
+                System.out.println(employee);
                 AccountProfile profile = new AccountProfile();
-                profile.setId(String.valueOf(admin.getId()));
-                profile.setRole(admin.getRole());
+                profile.setId(String.valueOf(employee.getEId()));
+                profile.setRole(employee.getRole());
 
                 return new SimpleAuthenticationInfo(profile, jwtToken.getCredentials(), getName());
             }
