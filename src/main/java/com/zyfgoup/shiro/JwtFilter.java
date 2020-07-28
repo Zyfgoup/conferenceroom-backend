@@ -44,7 +44,6 @@ public class JwtFilter extends AuthenticatingFilter {
     @Override
     //denied 拒绝 否认 返回true则表示拒绝访问  否则执行登录
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        //log.warn("进入JWTFilter");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String jwt = request.getHeader("Authorization");
         if(StringUtils.isEmpty(jwt)) {

@@ -110,7 +110,6 @@ public class DepartmentController {
     @RequiresRoles("user")
     public Result updatePwd(@RequestBody Map<String,Object> info){
 
-        System.out.println(info);
 
         //md5加密
         String oldPassword = (String)info.get("oldPassword");

@@ -32,7 +32,7 @@ public class ShiroConfig {
 
     @Bean
     public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
-        //log.warn("进入sessionManager的构建");
+        log.warn("进入sessionManager的构建");
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
 
         // inject redisSessionDAO
@@ -44,7 +44,7 @@ public class ShiroConfig {
     public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
                                                    SessionManager sessionManager,
                                                    RedisCacheManager redisCacheManager) {
-        //log.warn("进入securityManager的构建");
+        log.warn("进入securityManager的构建");
 
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(accountRealm);
 
@@ -58,7 +58,7 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        //log.warn("进入shiroFilterChainDefinition的构建");
+        log.warn("进入shiroFilterChainDefinition的构建");
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
 
         Map<String, String> filterMap = new LinkedHashMap<>();
@@ -72,7 +72,7 @@ public class ShiroConfig {
     @Bean("shiroFilterFactoryBean")
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
                                                          ShiroFilterChainDefinition shiroFilterChainDefinition) {
-        //log.warn("进入shiroFilterFactoryBean的构建");
+        log.warn("进入shiroFilterFactoryBean的构建");
 
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
