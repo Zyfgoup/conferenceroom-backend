@@ -2,6 +2,7 @@ package com.zyfgoup.common.exception;
 
 import com.zyfgoup.common.lang.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
@@ -56,6 +57,15 @@ public class GlobalExceptionHandler {
 
         return Result.fail(objectError.getDefaultMessage());
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = ExpiredCredentialsException.class)
+    public Result handler(ExpiredCredentialsException e) {
+        log.error("token过期：----------------{}", e);
+
+        return Result.fail("token过期");
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = IllegalArgumentException.class)
