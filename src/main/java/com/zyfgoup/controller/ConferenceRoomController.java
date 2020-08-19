@@ -121,7 +121,6 @@ public class ConferenceRoomController {
 
             //前端是number 但是使用JSON转成json格式 用String接收
             roomSize = String.valueOf(JSON.parse(roomSize));
-        System.out.println(roomFloor+","+roomType+","+roomSize);
 
         List<ConferenceRoom> list = conferenceRoomService.list(new QueryWrapper<ConferenceRoom>()
 
