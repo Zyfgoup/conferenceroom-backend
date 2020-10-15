@@ -3,6 +3,7 @@ package com.zyfgoup;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zyfgoup.common.exception.SystemException;
 import com.zyfgoup.entity.ConferenceRoom;
+import com.zyfgoup.entity.Employee;
 import com.zyfgoup.entity.group.ConRApplyRecord;
 import com.zyfgoup.quartz.EmailJobDetail;
 import com.zyfgoup.service.*;
@@ -109,5 +110,15 @@ class ConferenceroombackApplicationTests {
        emailService.sendAuditMail("zyfgoup@qq.com","测试审核结果通知",content);
 
      }
+
+     @Test
+    public void testLombok(){
+         Employee employee = new Employee();
+         employee.setRole("admin").setEName("ceshi");
+         System.out.println(employee);
+     }
+
+
+
 
 }

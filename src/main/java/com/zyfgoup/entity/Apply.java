@@ -1,6 +1,7 @@
 package com.zyfgoup.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -35,7 +36,11 @@ public class Apply implements Serializable {
     /**
      * 申请的部门id
      */
+
     private Long depId;
+
+    private String eId;
+
 
     /**
      * 会议室id
@@ -70,6 +75,7 @@ public class Apply implements Serializable {
      * 表示是否被用户删除 不是真的删除 只是不显示给用户看了
      */
     private  Integer deleted;
+
 
 
 }

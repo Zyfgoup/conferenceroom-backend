@@ -20,7 +20,8 @@ import java.util.Map;
 
 @RestController
 public class testController {
-@Autowired
+
+    @Autowired
     QuartzServie quartzServie;
 
 

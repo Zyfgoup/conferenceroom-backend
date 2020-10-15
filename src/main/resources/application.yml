@@ -30,6 +30,9 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+  #驼峰 默认开启
+#  configuration:
+#    map-underscore-to-camel-case: true
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:

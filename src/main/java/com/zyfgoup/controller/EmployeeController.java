@@ -107,7 +107,6 @@ public class EmployeeController {
     @RequiresRoles("admin")
     public Result addOrUpdate(@RequestBody Employee employee){
 
-        System.out.println(employee);
 
        Employee employee1 = employeeService.getOne(new QueryWrapper<Employee>()
                 .eq("e_no",employee.getENo()));
