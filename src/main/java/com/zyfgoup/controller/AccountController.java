@@ -13,14 +13,14 @@ import com.zyfgoup.service.AdminService;
 import com.zyfgoup.service.DepartmentService;
 import com.zyfgoup.service.EmployeeService;
 import com.zyfgoup.util.JwtUtils;
+import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -42,6 +42,30 @@ public class AccountController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+
+    /**
+     * 关闭浏览器后  重新获得用户信息给前台存入cookie session
+     * 会先走JwtFilter 如果过期了 就抛出异常 返回响应了
+     * 能走到这里表示还没过期
+     * @param
+     * @return
+     */
+    @GetMapping("/getInfo")
+    public Result getInfo(ServletRequest servletRequest){
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        String jwt = request.getHeader("Authorization");
+        Claims claimByToken = jwtUtils.getClaimByToken(jwt);
+        //throw new TestException("模拟token");
+        String userId = claimByToken.getSubject();
+        Admin admin = adminService.getOne(new QueryWrapper<Admin>().eq("id",userId));
+        return Result.succ(MapUtil.builder()
+                .put("id",admin.getId())
+                .put("username","管理员")
+                .put ("role",admin.getRole())
+                .map()
+        );
+    }
 
     @PostMapping("/login")
     public Result login(@RequestBody LoginDto loginDto,HttpServletResponse response){

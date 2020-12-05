@@ -2,6 +2,7 @@ package com.zyfgoup.common.exception;
 
 import com.zyfgoup.common.lang.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.io.ResolverUtil;
 import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -62,10 +63,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ExpiredCredentialsException.class)
     public Result handler(ExpiredCredentialsException e) {
         log.error("token过期：----------------{}", e);
-
-        return Result.fail("token过期");
+        return Result.fail(401,e.getMessage(),null);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = IllegalArgumentException.class)

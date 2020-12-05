@@ -1,5 +1,10 @@
 # conferenceroomback
 基于Springboot+Vue+ElementUI的企业会议室管理系统的后端
 
+2020.12.05更新
+修改了一下token过期后抛出异常无法被全局异常处理的问题
+原因是Filter的抛出的异常好像走不到切面 由Spring的ErrorController处理了
+所以自己写一个ErrorController的实现类 然后在Controller层把异常抛出了 就能被捕获进行处理了
+
 
 # 前端见我的另外一个conferenceroomfront仓库

@@ -47,13 +47,13 @@ public class JwtFilter extends AuthenticatingFilter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String jwt = request.getHeader("Authorization");
         if(StringUtils.isEmpty(jwt)) {
-
             return true;
         } else {
             // 校验jwt
             Claims claim = jwtUtils.getClaimByToken(jwt);
             if(claim == null || jwtUtils.isTokenExpired(claim.getExpiration())) {
-                throw new ExpiredCredentialsException("token已失效，请重新登录");
+                // token过期了
+                throw new ExpiredCredentialsException("认证已过期，请重新登录");
             }
 
             // 执行登录
