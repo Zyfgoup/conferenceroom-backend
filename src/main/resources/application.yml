@@ -49,8 +49,8 @@ shiro-redis:
 zyfgoup:
   jwt:
     secret: f4e2e52034348f86b67cde581c0f9eb5
-#token 过期时间 秒数
-    expire: 60
+#token 过期时间 秒 7天
+    expire: 604800
     header: Authorization
 
 logging:
