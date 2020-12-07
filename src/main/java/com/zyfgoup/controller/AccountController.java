@@ -57,14 +57,34 @@ public class AccountController {
         String jwt = request.getHeader("Authorization");
         Claims claimByToken = jwtUtils.getClaimByToken(jwt);
         //throw new TestException("模拟token");
-        String userId = claimByToken.getSubject();
-        Admin admin = adminService.getOne(new QueryWrapper<Admin>().eq("id",userId));
-        return Result.succ(MapUtil.builder()
-                .put("id",admin.getId())
-                .put("username","管理员")
-                .put ("role",admin.getRole())
-                .map()
-        );
+        String id = claimByToken.getSubject();
+        Admin admin = adminService.getOne(new QueryWrapper<Admin>().eq("id",id));
+        Department department = departmentService.getOne(new QueryWrapper<Department>().eq("dep_id",id));
+        Employee employee = employeeService.getOne(new QueryWrapper<Employee>().eq("e_id",id));
+        if(admin!=null) {
+            return Result.succ(MapUtil.builder()
+                    .put("id", admin.getId())
+                    .put("username", "管理员")
+                    .put("role", admin.getRole())
+                    .map()
+            );
+        }else if(department!=null){
+            return Result.succ(MapUtil.builder()
+                    //注意这里将long型id字符串 不然前台获取会四舍五入
+                    .put("id",department.getDepId())
+                    .put("username",department.getDepName())
+                    .put ("role",department.getRole())
+                    .map()
+            );
+        }else{
+            return Result.succ(MapUtil.builder()
+                    .put("id", employee.getEId())
+                    .put("username", employee.getEName())
+                    .put("role", employee.getRole())
+                    .put("depId", employee.getDepId())
+                    .map()
+            );
+        }
     }
 
     @PostMapping("/login")
@@ -139,7 +159,6 @@ public class AccountController {
                 response.setHeader("Authorization", jwt);
                 response.setHeader("Access-control-Expose-Headers", "Authorization");
                 return Result.succ(MapUtil.builder()
-
                         //注意这里将long型id字符串 不然前台获取会四舍五入
                         .put("id",department.getDepId())
                         .put("username",department.getDepName())
