@@ -116,6 +116,8 @@ public class AccountController {
                         //密码也正确
                         String jwt = jwtUtils.generateToken(admin.getId());
                         response.setHeader("Authorization", jwt);
+
+                        //将Authorization在响应首部暴露出来
                         response.setHeader("Access-control-Expose-Headers", "Authorization");
                         return Result.succ(MapUtil.builder()
                                 .put("id",admin.getId())
