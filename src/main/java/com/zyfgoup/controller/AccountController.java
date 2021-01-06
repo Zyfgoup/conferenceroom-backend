@@ -15,11 +15,10 @@ import com.zyfgoup.service.EmployeeService;
 import com.zyfgoup.util.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,46 +44,57 @@ public class AccountController {
 
 
     /**
-     * 关闭浏览器后  重新获得用户信息给前台存入cookie session
-     * 会先走JwtFilter 如果过期了 就抛出异常 返回响应了
-     * 能走到这里表示还没过期
+     * 刷新token  flag判断是不是要获取用户信息
      * @param
      * @return
      */
-    @GetMapping("/getInfo")
-    public Result getInfo(ServletRequest servletRequest){
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+    @GetMapping("/refreshToken/{flag}")
+    public Result getInfo(@PathVariable("flag") boolean flag , HttpServletRequest request, HttpServletResponse response){
+        //解析token
         String jwt = request.getHeader("Authorization");
         Claims claimByToken = jwtUtils.getClaimByToken(jwt);
+        if(claimByToken==null){
+            throw new ExpiredCredentialsException("认证无效 请重新登陆");
+        }
         //throw new TestException("模拟token");
         String id = claimByToken.getSubject();
-        Admin admin = adminService.getOne(new QueryWrapper<Admin>().eq("id",id));
-        Department department = departmentService.getOne(new QueryWrapper<Department>().eq("dep_id",id));
-        Employee employee = employeeService.getOne(new QueryWrapper<Employee>().eq("e_id",id));
-        if(admin!=null) {
-            return Result.succ(MapUtil.builder()
-                    .put("id", admin.getId())
-                    .put("username", "管理员")
-                    .put("role", admin.getRole())
-                    .map()
-            );
-        }else if(department!=null){
-            return Result.succ(MapUtil.builder()
-                    //注意这里将long型id字符串 不然前台获取会四舍五入
-                    .put("id",department.getDepId())
-                    .put("username",department.getDepName())
-                    .put ("role",department.getRole())
-                    .map()
-            );
-        }else{
-            return Result.succ(MapUtil.builder()
-                    .put("id", employee.getEId())
-                    .put("username", employee.getEName())
-                    .put("role", employee.getRole())
-                    .put("depId", employee.getDepId())
-                    .map()
-            );
+
+        //刷新token 生成新的 写在响应头里
+        jwtUtils.generateToken(Long.valueOf(id));
+        response.setHeader("Authorization", jwt);
+        //将Authorization在响应首部暴露出来
+        response.setHeader("Access-control-Expose-Headers", "Authorization");
+
+        if(flag) {
+            Admin admin = adminService.getOne(new QueryWrapper<Admin>().eq("id", id));
+            Department department = departmentService.getOne(new QueryWrapper<Department>().eq("dep_id", id));
+            Employee employee = employeeService.getOne(new QueryWrapper<Employee>().eq("e_id", id));
+            if (admin != null) {
+                return Result.succ(MapUtil.builder()
+                        .put("id", admin.getId())
+                        .put("username", "管理员")
+                        .put("role", admin.getRole())
+                        .map()
+                );
+            } else if (department != null) {
+                return Result.succ(MapUtil.builder()
+                        //注意这里将long型id字符串 不然前台获取会四舍五入
+                        .put("id", department.getDepId())
+                        .put("username", department.getDepName())
+                        .put("role", department.getRole())
+                        .map()
+                );
+            } else {
+                return Result.succ(MapUtil.builder()
+                        .put("id", employee.getEId())
+                        .put("username", employee.getEName())
+                        .put("role", employee.getRole())
+                        .put("depId", employee.getDepId())
+                        .map()
+                );
+            }
         }
+        return Result.succ(null);
     }
 
     @PostMapping("/login")
