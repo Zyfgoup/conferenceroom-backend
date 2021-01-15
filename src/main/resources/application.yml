@@ -30,13 +30,14 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   #驼峰 默认开启
-#  configuration:
-#    map-underscore-to-camel-case: true
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  configuration:
+    map-underscore-to-camel-case: true
+
+#    输出到日志文件中 org.apache.ibatis.logging.slf4j.Slf4jImpl
+# 如果是控制台 org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 server:
   port: 8888
-
 
 
 
@@ -53,10 +54,5 @@ zyfgoup:
     expire: 604800
     header: Authorization
 
-logging:
-  file:
-    name: ./logs/logger.log
-  level:
-    root: info
 
 

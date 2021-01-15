@@ -1,12 +1,17 @@
 package com.zyfgoup;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zyfgoup.common.exception.SystemException;
+import com.zyfgoup.entity.Admin;
 import com.zyfgoup.entity.ConferenceRoom;
 import com.zyfgoup.entity.Employee;
 import com.zyfgoup.entity.group.ConRApplyRecord;
 import com.zyfgoup.quartz.EmailJobDetail;
 import com.zyfgoup.service.*;
+import com.zyfgoup.util.JwtUtils;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +29,8 @@ class ConferenceroombackApplicationTests {
     @Autowired
     ConferenceRoomService conferenceRoomService;
 
+    @Autowired
+    JwtUtils jwtUtils;
 
     @Autowired
     ApplyService applyService;
@@ -117,6 +124,31 @@ class ConferenceroombackApplicationTests {
          employee.setRole("admin").setEName("ceshi");
          System.out.println(employee);
      }
+
+    @Test
+    public void testJWT(){
+        Date nowDate = new Date();
+        //过期时间
+        Date expireDate = new Date(nowDate.getTime() + 3600 * 1000);
+        Admin admin = new Admin();
+        admin.setId(100);
+        admin.setUsername("zouyongfa");
+        admin.setPassword("aaaaa");
+        admin.setRole("admin");
+
+        String s = JSON.toJSONString(admin);
+
+        String jwt = Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setSubject(s)
+                .setIssuedAt(nowDate)
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, "f4e2e52034348f86b67cde581c0f9eb5")
+                .compact();
+
+        System.out.println(JSON.parseObject(jwtUtils.getClaimByToken(jwt).getSubject(),Admin.class).toString());
+
+    }
 
 
 
